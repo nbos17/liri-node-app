@@ -22,6 +22,7 @@ for (var i = 3; i < cmdArgs.length; i++) {
 console.log(liriCommand);
 console.log(liriArg);
 
+//Twitter api call
 function tweets() {
   var params = {
   	screen_name: 'bosman0531',
@@ -40,14 +41,25 @@ function tweets() {
 
 }
 
-
+//Spotify api call
 function spotifySong(song) {
-  spotify.search({ type: 'track', query: song, limit : 1 }, function(err, data) {
+
+  var music;
+
+  if (song === "") {
+    music = "The Sign Ace of Base";
+    console.log(music);
+  }
+  else {
+    music = song;
+  }
+
+  spotify.search({ type: 'track', query: music, limit : 1 }, function(err, data) {
       if (err) {
         return console.log('Error occurred: ' + err);
       }
       else {
-        console.log(data);
+        //console.log(data);
         var data = data.tracks.items;
 
         console.log("Artist: " + data[0].artists[0].name + "\nSong Title: " + data[0].name + "\nPreview: " + data[0].preview_url + "\nAlbum: " + data[0].album.name);
@@ -55,31 +67,87 @@ function spotifySong(song) {
   });
 }
 
-function moveieSearch() {
+//omdpapi call
+function moveieSearch(query) {
 
-  request("http://www.omdbapi.com/?t=remember+the+titans&y=&plot=short&apikey=trilogy", function(error, response, body) {
-
-  // If the request is successful (i.e. if the response status code is 200)
-  if (!error && response.statusCode === 200) {
-
-    // Parse the body of the site and recover just the imdbRating
-    // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
-    console.log(JSON.parse(body));
-    console.log("Title: " + JSON.parse(body).Title);
-    console.log("Year: " + JSON.parse(body).Year);
-    console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
-    //console.log("Rotten Tomatoes: " + JSON.parse(body).ratings.source);
-    console.log("Country: " + JSON.parse(body).Country);
-    console.log("Language: " + JSON.parse(body).Language);
-    console.log("Plot: " + JSON.parse(body).Plot);
-    console.log("Actors: " + JSON.parse(body).Actors);
+  var search = '';
+  if (search === '') {
+    search = "Mr. Nobody";
   }
-});
+  else {
+    search = this.query;
+  }
+
+  search = search.split(' ').join('+');
+
+  var url = "http://www.omdbapi.com/?t=" + search + "&apikey=trilogy";
+
+  request(url, function(error, response, body) {
+
+
+    if (!error && response.statusCode === 200) {
+
+      //console.log(JSON.parse(body));
+      console.log("Title: " + JSON.parse(body).Title);
+      console.log("Year: " + JSON.parse(body).Year);
+      console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+      //console.log("Rotten Tomatoes: " + JSON.parse(body).ratings.source);
+      console.log("Country: " + JSON.parse(body).Country);
+      console.log("Language: " + JSON.parse(body).Language);
+      console.log("Plot: " + JSON.parse(body).Plot);
+      console.log("Actors: " + JSON.parse(body).Actors);
+    }
+    else {
+      return error;
+    }
+  });
 
 }
 
-moveieSearch();
-//tweets();
+function doWhatSays() {
+  fs.readFile('./random.txt', 'utf8', function(error, data) {
+    if (error) {
+      console.log("ERROR");
+    }
+    else {
+      console.log(data);
+      var splitString = data.split(',');
+      var first = splitString[0].trim();
+      var second = splitString[1].trim();
+
+      if (first === "my-tweets") {
+        tweets();
+      }
+      else if (first === "spotify-this-song") {
+        spotifySong(second);
+      }
+      else if (first === "movie-this") {
+        moveieSearch(second);
+      }
+
+    }
+  })
+}
+
+  //fs.readFile('./random.txt', 'utf8', function (error, data) {
+  
+
+
+
+
+if (liriCommand === "my-tweets") {
+  tweets();
+}
+else if (liriCommand === "spotify-this-song") {
+  spotifySong(liriArg);
+}
+else if (liriCommand === "movie-this") {
+  moveieSearch(liriArg);
+}
+else if (liriCommand === "do-what-it-says") {
+  doWhatSays();
+}
+
 
 
 
