@@ -16,9 +16,18 @@ var liriCommand = process.argv[2];
 
 console.log(liriCommand);
 
-var params = {screen_name: 'nodejs'};
+function tweets() {
+
+var params = {
+	screen_name: 'bosman0531',
+	count: 20
+	};
 client.get('statuses/user_timeline', params, function(error, tweets, response) {
   if (!error) {
-    console.log(tweets);
+  	for (var i = 0; i < tweets.length; i++) {
+  		console.log("Tweet: " + tweets[i].text + " Date Created: " + tweets[i].created_at + '\n' + '-----------------------');
+  	}
   }
 });
+
+}
