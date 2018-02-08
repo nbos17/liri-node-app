@@ -11,6 +11,7 @@ var client = new Twitter(keys.twitter);
 // Read in the command line arguments
 var cmdArgs = process.argv;
 
+
 // The LIRI command will always be the second command line argument
 var liriCommand = process.argv[2];
 
@@ -19,8 +20,6 @@ for (var i = 3; i < cmdArgs.length; i++) {
   liriArg += cmdArgs[i] + ' ';
 }
 
-console.log(liriCommand);
-console.log(liriArg);
 
 //Twitter api call
 function tweets() {
@@ -70,12 +69,12 @@ function spotifySong(song) {
 //omdpapi call
 function moveieSearch(query) {
 
-  var search = '';
+  var search = query;
   if (search === '') {
     search = "Mr. Nobody";
   }
   else {
-    search = this.query;
+    search = query;
   }
 
   search = search.split(' ').join('+');
@@ -104,6 +103,7 @@ function moveieSearch(query) {
 
 }
 
+//Read txt file
 function doWhatSays() {
   fs.readFile('./random.txt', 'utf8', function(error, data) {
     if (error) {
@@ -124,16 +124,19 @@ function doWhatSays() {
       else if (first === "movie-this") {
         moveieSearch(second);
       }
+      else {
+        console.log("Please enter a valid command");
+      }
 
     }
   })
 }
 
-  //fs.readFile('./random.txt', 'utf8', function (error, data) {
+
   
 
 
-
+//calling functions
 
 if (liriCommand === "my-tweets") {
   tweets();
@@ -146,6 +149,9 @@ else if (liriCommand === "movie-this") {
 }
 else if (liriCommand === "do-what-it-says") {
   doWhatSays();
+}
+else {
+  console.log("Please enter a valid input");
 }
 
 
